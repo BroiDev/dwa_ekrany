@@ -2,12 +2,9 @@ package com.broidev.dwa_ekrany;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,93 +12,65 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-    private final ActivityResultLauncher<Intent> summaryLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> drawLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    String txId = result.getData().getStringExtra(SummaryActivity.EXTRA_TRANSACTION_ID);
-                    showRegistered(txId);
+                    String selected = result.getData().getStringExtra(SummaryActivity.EXTRA_SELECTED_ITEM);
+                    if (selected != null) {
+                        Snackbar.make(findViewById(R.id.main),
+                                getString(R.string.selected_item_msg, selected),
+                                Snackbar.LENGTH_LONG).show();
+                    }
                 }
             });
 
-    private EditText etAmount;
-    private Spinner spCurrency;
-    private SeekBar sbMargin;
-    private TextView tvMarginValue;
-    private CheckBox cbVip;
+    private EditText etItem;
+    private TextView tvList;
+    private final ArrayList<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etAmount = findViewById(R.id.etAmount);
-        spCurrency = findViewById(R.id.spCurrency);
-        sbMargin = findViewById(R.id.sbMargin);
-        tvMarginValue = findViewById(R.id.tvMarginValue);
-        cbVip = findViewById(R.id.cbVip);
+        etItem = findViewById(R.id.etItem);
+        tvList = findViewById(R.id.tvList);
 
-        setUpCurrencySpinner();
-        setUpMarginSeekBar();
-
-        findViewById(R.id.btnNext).setOnClickListener(v -> openSummary());
+        findViewById(R.id.btnAdd).setOnClickListener(v -> addItem());
+        findViewById(R.id.btnDraw).setOnClickListener(v -> openDrawScreen());
     }
 
-    private void setUpCurrencySpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.currencies, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCurrency.setAdapter(adapter);
-    }
-
-    private void setUpMarginSeekBar() {
-        tvMarginValue.setText(String.valueOf(sbMargin.getProgress()));
-        sbMargin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvMarginValue.setText(String.valueOf(progress));
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
-        });
-    }
-
-    private void openSummary() {
-        String amountText = etAmount.getText().toString().trim();
-        if (amountText.isEmpty()) {
-            etAmount.setError(getString(R.string.error_empty_amount));
-            return;
+    private void addItem() {
+        String text = etItem.getText().toString().trim();
+        if (!text.isEmpty()) {
+            items.add(text);
+            updateList();
+            etItem.setText("");
         }
+    }
 
-        double amount;
-        try {
-            amount = Double.parseDouble(amountText);
-        } catch (NumberFormatException e) {
-            etAmount.setError(getString(R.string.error_empty_amount));
-            return;
+    private void updateList() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            sb.append(i + 1).append(". ").append(items.get(i)).append("\n");
         }
+        tvList.setText(sb.toString());
+    }
 
-        if (amount <= 0) {
-            etAmount.setError(getString(R.string.error_empty_amount));
+    private void openDrawScreen() {
+        if (items.isEmpty()) {
+            Toast.makeText(this, R.string.empty_list_error, Toast.LENGTH_SHORT).show();
             return;
         }
 
         Intent intent = new Intent(this, SummaryActivity.class);
-        intent.putExtra(SummaryActivity.EXTRA_AMOUNT, amount);
-        intent.putExtra(SummaryActivity.EXTRA_CURRENCY, spCurrency.getSelectedItem().toString());
-        intent.putExtra(SummaryActivity.EXTRA_MARGIN, sbMargin.getProgress());
-        intent.putExtra(SummaryActivity.EXTRA_VIP, cbVip.isChecked());
-
-        summaryLauncher.launch(intent);
-    }
-
-    private void showRegistered(String txId) {
-        Snackbar.make(findViewById(R.id.main),
-                getString(R.string.registered, txId),
-                Snackbar.LENGTH_LONG).show();
+        // Przekazanie wpisów jako tablicy (wymaganie z zadania)
+        intent.putExtra(SummaryActivity.EXTRA_ITEMS_ARRAY, items.toArray(new String[0]));
+        drawLauncher.launch(intent);
     }
 }

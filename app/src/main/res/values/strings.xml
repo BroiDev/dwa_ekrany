@@ -1,31 +1,16 @@
 <resources>
     <string name="app_name">Dwa ekrany</string>
 
-    <string name="header_form">Przelicznik walut</string>
-    <string name="label_amount">Kwota w PLN</string>
-    <string name="label_currency">Waluta docelowa</string>
-    <string name="label_margin">Marża kantoru (%)</string>
-    <string name="vip_client">Klient VIP (brak prowizji)</string>
-    <string name="btn_next">PRZELICZ</string>
-    <string name="error_empty_amount">Podaj kwotę!</string>
+    <!-- Zadanie 4: Losowy wybór -->
+    <string name="header_main_random">Losowy wybór</string>
+    <string name="hint_item">Wpisz nową opcję…</string>
+    <string name="btn_add">DODAJ</string>
+    <string name="btn_draw">LOSUJ</string>
+    <string name="empty_list_error">Lista jest pusta! Dodaj coś najpierw.</string>
 
-    <string name="header_summary">Podsumowanie</string>
-    <string name="btn_confirm">ZATWIERDŹ</string>
-    <string name="btn_edit">POWRÓT</string>
-    <string name="btn_share">Udostępnij</string>
-
-    <string name="summary_format">Wymieniasz: %.2f PLN\nWaluta: %s\nMarża: %d%%\nKlient VIP: %s\n\nDo wypłaty: %.2f %s</string>
-    <string name="yes_short">tak</string>
-    <string name="no_short">nie</string>
-
-    <string name="registered">Transakcja: %1$s</string>
-    <string name="share_via">Udostępnij przez</string>
-    <string name="error_no_app">Brak aplikacji do obsługi tej czynności</string>
-
-    <string-array name="currencies">
-        <item>EUR</item>
-        <item>USD</item>
-        <item>GBP</item>
-        <item>CHF</item>
-    </string-array>
+    <string name="header_draw_result">Wynik losowania</string>
+    <string name="total_items">Wszystkich wpisów: %1$d</string>
+    <string name="btn_redraw">LOSUJ PONOWNIE</string>
+    <string name="btn_select_this">WYBIERAM TO</string>
+    <string name="selected_item_msg">Ostateczny wybór: %1$s</string>
 </resources>
