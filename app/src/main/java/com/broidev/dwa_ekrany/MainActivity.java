@@ -9,9 +9,23 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final ActivityResultLauncher<Intent> summaryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String number = result.getData()
+                            .getStringExtra(SummaryActivity.EXTRA_NUMBER);
+                    showRegistered(number);
+                }
+            });
 
     private EditText etName, etEmail;
     private Spinner spCourse;
@@ -67,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(SummaryActivity.EXTRA_COURSE, spCourse.getSelectedItem().toString());
         intent.putExtra(SummaryActivity.EXTRA_LEVEL, sbLevel.getProgress());
         intent.putExtra(SummaryActivity.EXTRA_NEWSLETTER, cbNewsletter.isChecked());
-        startActivity(intent);
+
+        summaryLauncher.launch(intent);
+    }
+
+    private void showRegistered(String number) {
+        Snackbar.make(findViewById(R.id.main),
+                getString(R.string.registered, number),
+                Snackbar.LENGTH_LONG).show();
     }
 }
