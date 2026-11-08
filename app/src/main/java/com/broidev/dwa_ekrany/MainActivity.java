@@ -21,73 +21,87 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    String number = result.getData()
-                            .getStringExtra(SummaryActivity.EXTRA_NUMBER);
-                    showRegistered(number);
+                    String txId = result.getData().getStringExtra(SummaryActivity.EXTRA_TRANSACTION_ID);
+                    showRegistered(txId);
                 }
             });
 
-    private EditText etName, etEmail;
-    private Spinner spCourse;
-    private SeekBar sbLevel;
-    private TextView tvLevelValue;
-    private CheckBox cbNewsletter;
+    private EditText etAmount;
+    private Spinner spCurrency;
+    private SeekBar sbMargin;
+    private TextView tvMarginValue;
+    private CheckBox cbVip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
-        spCourse = findViewById(R.id.spCourse);
-        sbLevel = findViewById(R.id.sbLevel);
-        tvLevelValue = findViewById(R.id.tvLevelValue);
-        cbNewsletter = findViewById(R.id.cbNewsletter);
+        etAmount = findViewById(R.id.etAmount);
+        spCurrency = findViewById(R.id.spCurrency);
+        sbMargin = findViewById(R.id.sbMargin);
+        tvMarginValue = findViewById(R.id.tvMarginValue);
+        cbVip = findViewById(R.id.cbVip);
 
-        setUpCourseSpinner();
-        setUpLevelSeekBar();
+        setUpCurrencySpinner();
+        setUpMarginSeekBar();
 
         findViewById(R.id.btnNext).setOnClickListener(v -> openSummary());
     }
 
-    private void setUpCourseSpinner() {
+    private void setUpCurrencySpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.courses, android.R.layout.simple_spinner_item);
+                this, R.array.currencies, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCourse.setAdapter(adapter);
+        spCurrency.setAdapter(adapter);
     }
 
-    private void setUpLevelSeekBar() {
-        tvLevelValue.setText(String.valueOf(sbLevel.getProgress()));
-        sbLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+    private void setUpMarginSeekBar() {
+        tvMarginValue.setText(String.valueOf(sbMargin.getProgress()));
+        sbMargin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvLevelValue.setText(String.valueOf(progress));
+                tvMarginValue.setText(String.valueOf(progress));
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
     }
 
     private void openSummary() {
+        String amountText = etAmount.getText().toString().trim();
+        if (amountText.isEmpty()) {
+            etAmount.setError(getString(R.string.error_empty_amount));
+            return;
+        }
+
+        double amount;
+        try {
+            amount = Double.parseDouble(amountText);
+        } catch (NumberFormatException e) {
+            etAmount.setError(getString(R.string.error_empty_amount));
+            return;
+        }
+
+        if (amount <= 0) {
+            etAmount.setError(getString(R.string.error_empty_amount));
+            return;
+        }
+
         Intent intent = new Intent(this, SummaryActivity.class);
-        intent.putExtra(SummaryActivity.EXTRA_NAME, etName.getText().toString().trim());
-        intent.putExtra(SummaryActivity.EXTRA_EMAIL, etEmail.getText().toString().trim());
-        intent.putExtra(SummaryActivity.EXTRA_COURSE, spCourse.getSelectedItem().toString());
-        intent.putExtra(SummaryActivity.EXTRA_LEVEL, sbLevel.getProgress());
-        intent.putExtra(SummaryActivity.EXTRA_NEWSLETTER, cbNewsletter.isChecked());
+        intent.putExtra(SummaryActivity.EXTRA_AMOUNT, amount);
+        intent.putExtra(SummaryActivity.EXTRA_CURRENCY, spCurrency.getSelectedItem().toString());
+        intent.putExtra(SummaryActivity.EXTRA_MARGIN, sbMargin.getProgress());
+        intent.putExtra(SummaryActivity.EXTRA_VIP, cbVip.isChecked());
 
         summaryLauncher.launch(intent);
     }
 
-    private void showRegistered(String number) {
+    private void showRegistered(String txId) {
         Snackbar.make(findViewById(R.id.main),
-                getString(R.string.registered, number),
+                getString(R.string.registered, txId),
                 Snackbar.LENGTH_LONG).show();
     }
 }

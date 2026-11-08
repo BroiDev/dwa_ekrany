@@ -12,57 +12,71 @@ import java.util.Random;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    public static final String EXTRA_NAME = "com.broidev.dwa_ekrany.NAME";
-    public static final String EXTRA_EMAIL = "com.broidev.dwa_ekrany.EMAIL";
-    public static final String EXTRA_COURSE = "com.broidev.dwa_ekrany.COURSE";
-    public static final String EXTRA_LEVEL = "com.broidev.dwa_ekrany.LEVEL";
-    public static final String EXTRA_NEWSLETTER = "com.broidev.dwa_ekrany.NEWSLETTER";
-    public static final String EXTRA_NUMBER = "com.broidev.dwa_ekrany.NUMBER";
+    public static final String EXTRA_AMOUNT = "com.broidev.dwa_ekrany.AMOUNT";
+    public static final String EXTRA_CURRENCY = "com.broidev.dwa_ekrany.CURRENCY";
+    public static final String EXTRA_MARGIN = "com.broidev.dwa_ekrany.MARGIN";
+    public static final String EXTRA_VIP = "com.broidev.dwa_ekrany.VIP";
 
-    private TextView tvSummary;
+    public static final String EXTRA_TRANSACTION_ID = "com.broidev.dwa_ekrany.TRANSACTION_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
-        tvSummary = findViewById(R.id.tvSummary);
+        TextView tvSummary = findViewById(R.id.tvSummary);
         tvSummary.setText(buildSummary());
 
         findViewById(R.id.btnConfirm).setOnClickListener(v -> confirm());
         findViewById(R.id.btnEdit).setOnClickListener(v -> finish());
-        findViewById(R.id.btnShare).setOnClickListener(v -> share());
+        findViewById(R.id.btnShare).setOnClickListener(v -> share(tvSummary.getText().toString()));
     }
 
     private String buildSummary() {
         Intent intent = getIntent();
 
-        String name = intent.getStringExtra(EXTRA_NAME);
-        String email = intent.getStringExtra(EXTRA_EMAIL);
-        String course = intent.getStringExtra(EXTRA_COURSE);
-        int level = intent.getIntExtra(EXTRA_LEVEL, 0);
-        boolean newsletter = intent.getBooleanExtra(EXTRA_NEWSLETTER, false);
+        double amountPln = intent.getDoubleExtra(EXTRA_AMOUNT, 0.0);
+        String currency = intent.getStringExtra(EXTRA_CURRENCY);
+        int margin = intent.getIntExtra(EXTRA_MARGIN, 0);
+        boolean isVip = intent.getBooleanExtra(EXTRA_VIP, false);
 
-        String newsletterText = newsletter
-                ? getString(R.string.yes_short)
-                : getString(R.string.no_short);
+        if (currency == null) {
+            currency = "EUR";
+        }
 
-        return getString(R.string.summary_format, name, email, course, level, newsletterText);
+        // Proste przeliczniki (sztywny kurs)
+        double rate = 1.0;
+        switch (currency) {
+            case "EUR": rate = 4.30; break;
+            case "USD": rate = 4.00; break;
+            case "GBP": rate = 5.10; break;
+            case "CHF": rate = 4.50; break;
+        }
+
+        // Vip nie płaci marży
+        int effectiveMargin = isVip ? 0 : margin;
+
+        // Kwota docelowa: (PLN / rate) potrącone o marżę
+        double resultAmount = (amountPln / rate) * (1.0 - (effectiveMargin / 100.0));
+
+        String vipText = isVip ? getString(R.string.yes_short) : getString(R.string.no_short);
+
+        return getString(R.string.summary_format, amountPln, currency, margin, vipText, resultAmount, currency);
     }
 
     private void confirm() {
-        String number = "ZG/" + (1000 + new Random().nextInt(9000));
+        String txId = "TX-" + (10000 + new Random().nextInt(90000));
 
         Intent result = new Intent();
-        result.putExtra(EXTRA_NUMBER, number);
+        result.putExtra(EXTRA_TRANSACTION_ID, txId);
         setResult(RESULT_OK, result);
         finish();
     }
 
-    private void share() {
+    private void share(String textToShare) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, tvSummary.getText().toString());
+        intent.putExtra(Intent.EXTRA_TEXT, textToShare);
 
         try {
             startActivity(Intent.createChooser(intent, getString(R.string.share_via)));

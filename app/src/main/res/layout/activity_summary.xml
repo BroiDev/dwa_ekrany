@@ -12,7 +12,7 @@
         android:id="@+id/tvHeaderSummary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#008080"
+        android:background="#2E7D32"
         android:padding="12dp"
         android:text="@string/header_summary"
         android:textColor="#FFFFFF"
@@ -25,7 +25,7 @@
         android:layout_marginTop="24dp"
         android:lineSpacingExtra="4dp"
         android:textSize="18sp"
-        tools:text="Imię: Anna Nowak" />
+        tools:text="Wymieniasz: 1000 PLN..." />
 
     <Button
         android:id="@+id/btnShare"

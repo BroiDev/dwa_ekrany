@@ -1,30 +1,31 @@
 <resources>
     <string name="app_name">Dwa ekrany</string>
 
-    <string name="header_form">Zapisy na kurs</string>
-    <string name="label_name">Imię i nazwisko</string>
-    <string name="label_email">Adres e-mail</string>
-    <string name="label_course">Kurs</string>
-    <string name="label_level">Poziom zaawansowania</string>
-    <string name="newsletter">Chcę dostawać newsletter</string>
-    <string name="btn_next">DALEJ</string>
+    <string name="header_form">Przelicznik walut</string>
+    <string name="label_amount">Kwota w PLN</string>
+    <string name="label_currency">Waluta docelowa</string>
+    <string name="label_margin">Marża kantoru (%)</string>
+    <string name="vip_client">Klient VIP (brak prowizji)</string>
+    <string name="btn_next">PRZELICZ</string>
+    <string name="error_empty_amount">Podaj kwotę!</string>
 
-    <string name="header_summary">Sprawdź dane</string>
-    <string name="btn_confirm">POTWIERDŹ</string>
-    <string name="btn_edit">POPRAW DANE</string>
+    <string name="header_summary">Podsumowanie</string>
+    <string name="btn_confirm">ZATWIERDŹ</string>
+    <string name="btn_edit">POWRÓT</string>
     <string name="btn_share">Udostępnij</string>
 
-    <string name="summary_format">Imię: %1$s\nE-mail: %2$s\nKurs: %3$s\nPoziom: %4$d/10\nNewsletter: %5$s</string>
+    <string name="summary_format">Wymieniasz: %.2f PLN\nWaluta: %s\nMarża: %d%%\nKlient VIP: %s\n\nDo wypłaty: %.2f %s</string>
     <string name="yes_short">tak</string>
     <string name="no_short">nie</string>
 
-    <string name="registered">Zapisano, numer zgłoszenia %1$s</string>
+    <string name="registered">Transakcja: %1$s</string>
     <string name="share_via">Udostępnij przez</string>
     <string name="error_no_app">Brak aplikacji do obsługi tej czynności</string>
 
-    <string-array name="courses">
-        <item>Programowanie w Javie</item>
-        <item>Aplikacje mobilne</item>
-        <item>Bazy danych</item>
+    <string-array name="currencies">
+        <item>EUR</item>
+        <item>USD</item>
+        <item>GBP</item>
+        <item>CHF</item>
     </string-array>
 </resources>
