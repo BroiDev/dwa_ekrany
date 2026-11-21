@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Random;
 
@@ -23,6 +24,12 @@ public class SummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         tvResult = findViewById(R.id.tvResult);
         TextView tvCount = findViewById(R.id.tvCount);
 
@@ -33,6 +40,8 @@ public class SummaryActivity extends AppCompatActivity {
             finish(); // Zabezpieczenie na wypadek niespodziewanego braku danych
             return;
         }
+
+        setTitle(getString(R.string.title_summary, items.length));
 
         tvCount.setText(getString(R.string.total_items, items.length));
 

@@ -13,4 +13,15 @@
     <string name="btn_redraw">LOSUJ PONOWNIE</string>
     <string name="btn_select_this">WYBIERAM TO</string>
     <string name="selected_item_msg">Ostateczny wybór: %1$s</string>
+
+    <string name="title_summary">Losowanie: %1$d opcji</string>
+    <string name="title_about">O aplikacji</string>
+    <string name="action_share">Udostępnij</string>
+    <string name="action_clear">Wyczyść</string>
+    <string name="action_about">O aplikacji</string>
+    <string name="about_text">Aplikacja pozwalająca na losowanie jednego z elementów z wcześniej przygotowanej listy.\nUtworzona na zajęcia.</string>
+    <string name="share_via">Udostępnij przez</string>
+    <string name="cleared">Wyczyszczono listę</string>
+    <string name="error_no_app">Brak aplikacji</string>
+    <string name="nothing_to_share">Lista jest pusta</string>
 </resources>
